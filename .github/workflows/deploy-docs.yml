@@ -25,6 +25,6 @@ jobs:
         run: cd docs && npm run build
 
       - name: Deploy to GitHub Pages
-        run: cd docs && GIT_USER=<username> npm run deploy
+        run: cd docs && GIT_USER=danghung1202 npm run deploy
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
