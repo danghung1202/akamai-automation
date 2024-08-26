@@ -75,4 +75,3 @@ If you encounter any issues or have questions, feel free to open an issue on Git
 ### Disclaimer
 
 This tool is intended for use by authorized users of Akamai's CDN platform. Please ensure you have the necessary permissions to perform automated tasks on your Akamai account.
-
