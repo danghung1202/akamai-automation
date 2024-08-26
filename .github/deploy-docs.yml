@@ -1,0 +1,30 @@
+name: Deploy Docusaurus Documentation
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out the code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: cd docs && npm install
+
+      - name: Build the site
+        run: cd docs && npm run build
+
+      - name: Deploy to GitHub Pages
+        run: cd docs && GIT_USER=<username> npm run deploy
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
