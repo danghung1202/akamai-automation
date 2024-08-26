@@ -2,46 +2,78 @@
 sidebar_position: 1
 ---
 
-# Tutorial Intro
+# Akamai Automation Tool
 
-Let's discover **Docusaurus in less than 5 minutes**.
+This project is a Puppeteer-based automation tool designed to automate configuration tasks in the Akamai CDN platform, specifically targeting Akamai Property Manager. The tool leverages Puppeteer for browser automation, enabling seamless interaction with Akamai's web interface to manage rules, behaviors, criteria, and other configuration components.
 
-## Getting Started
+## Features
 
-Get started by **creating a new site**.
+- **Automate Property Manager Tasks**: Create, update, and manage property configurations, including rules, behaviors, and criteria.
+- **Behavior Management**: Automatically check for, add, or update behaviors within property rules.
+- **Version Control**: Navigate through different property versions, create new versions based on staging or production, and manage draft versions.
+- **Detailed Logging**: Includes comprehensive logging to track all actions performed by the automation scripts.
 
-Or **try Docusaurus immediately** with **[docusaurus.new](https://docusaurus.new)**.
+## Installation
 
-### What you'll need
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/danghung1202/akamai-automation.git
+   cd akamai-automation
+   ```
 
-- [Node.js](https://nodejs.org/en/download/) version 18.0 or above:
-  - When installing Node.js, you are recommended to check all checkboxes related to dependencies.
+2. Install the dependencies:
+   ```bash
+   npm install
+   ```
 
-## Generate a new site
+## Usage
 
-Generate a new Docusaurus site using the **classic template**.
+1. **Setup**: Ensure you have access to Akamai's Property Manager and the necessary credentials for logging in.
 
-The classic template will automatically be added to your project after you run the command:
+2. **Run the automation scripts**:
+   - You can run individual scripts or create custom scripts to automate specific tasks. For example, to check if a behavior exists in a property:
+   ```javascript
+   const puppeteer = require('puppeteer');
+   const { checkHasBehaviorByName } = require('./path/to/your/module');
 
-```bash
-npm init docusaurus@latest my-website classic
-```
+   (async () => {
+       const browser = await puppeteer.launch({ headless: false });
+       const page = await browser.newPage();
 
-You can type this command into Command Prompt, Powershell, Terminal, or any other integrated terminal of your code editor.
+       // Navigate to the Akamai Property Manager login page and log in
+       await page.goto('https://control.akamai.com');
 
-The command also installs all necessary dependencies you need to run Docusaurus.
+       // Perform the task
+       const hasBehavior = await checkHasBehaviorByName(page, 'Behavior Name');
+       console.log(`Behavior exists: ${hasBehavior}`);
 
-## Start your site
+       await browser.close();
+   })();
+   ```
 
-Run the development server:
+3. **Documentation**: Detailed documentation for each method is available in the `docs` directory. You can also generate a Docusaurus site to browse the documentation more easily.
 
-```bash
-cd my-website
-npm run start
-```
+## Project Structure
 
-The `cd` command changes the directory you're working with. In order to work with your newly created Docusaurus site, you'll need to navigate the terminal there.
+- `src/`: Contains the core automation scripts.
+- `docs/`: Documentation files for the functions in this project.
+- `log/`: Utility for logging actions during script execution.
 
-The `npm run start` command builds your website locally and serves it through a development server, ready for you to view at http://localhost:3000/.
+## Contributing
 
-Open `docs/intro.md` (this page) and edit some lines: the site **reloads automatically** and displays your changes.
+Contributions are welcome! Please fork the repository and submit a pull request for any improvements or bug fixes.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Support
+
+If you encounter any issues or have questions, feel free to open an issue on GitHub.
+
+---
+
+### Disclaimer
+
+This tool is intended for use by authorized users of Akamai's CDN platform. Please ensure you have the necessary permissions to perform automated tasks on your Akamai account.
+

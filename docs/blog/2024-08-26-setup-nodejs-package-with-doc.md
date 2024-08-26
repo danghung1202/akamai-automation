@@ -1,7 +1,6 @@
 ---
 slug: setup-nodejs-package-with-doc
 title: How To Set Up the Node.js Package project with Docusaurus
-authors: [slorber, yangshun]
 tags: [hola, docusaurus]
 ---
 
