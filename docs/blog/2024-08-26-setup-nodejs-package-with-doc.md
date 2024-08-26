@@ -116,34 +116,46 @@ To integrate the Docusaurus documentation site within your Node.js package proje
    ```yaml
    name: Deploy Docusaurus Documentation
 
-   on:
-     push:
-       branches:
-         - main
+    on:
+    push:
+        paths:
+        - '.github/workflows/deploy-doc.yml'
+        - 'docs/**'
+        # Review gh actions docs if you want to further define triggers, paths, etc
+        # https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#on
 
-   jobs:
-     build:
-       runs-on: ubuntu-latest
+    jobs:
+    deploy:
+        name: Deploy Docusaurus to GitHub Pages
+        runs-on: ubuntu-latest
+        defaults:
+        run:
+            working-directory: ./docs
 
-       steps:
-         - name: Check out the code
-           uses: actions/checkout@v3
+        steps:
+        - uses: actions/checkout@v3
 
-         - name: Set up Node.js
-           uses: actions/setup-node@v3
-           with:
-             node-version: '18'
+        - name: Setup Node
+            uses: actions/setup-node@v3
+            with:
+            node-version: 18
+            cache: npm
 
-         - name: Install dependencies
-           run: cd docs && npm install
+        - name: Install dependencies
+            run: npm install --frozen-lockfile
 
-         - name: Build the site
-           run: cd docs && npm run build
+        - name: Build website
+            run: npm run build
 
-         - name: Deploy to GitHub Pages
-           run: cd docs && GIT_USER=<username> npm run deploy
-           env:
-             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        # Popular action to deploy to GitHub Pages:
+        # Docs: https://github.com/peaceiris/actions-gh-pages#%EF%B8%8F-docusaurus
+        - name: Deploy to GitHub Pages
+            uses: peaceiris/actions-gh-pages@v4
+            if: github.ref == 'refs/heads/main'
+            with:
+            github_token: ${{ secrets.GH_TOKEN }}
+            # Build output to publish to the `gh-pages` branch:
+            publish_dir: ./docs/build
    ```
 
    **Note:** Replace `<username>` and `<repo-name>` with your GitHub username and repository name.
