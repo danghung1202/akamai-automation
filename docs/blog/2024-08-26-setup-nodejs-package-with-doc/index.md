@@ -152,6 +152,7 @@ jobs:
       # Docs: https://github.com/peaceiris/actions-gh-pages#%EF%B8%8F-docusaurus
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
+        # Only publish when the changes was made on main branch
         if: github.ref == 'refs/heads/main'
         with:
           github_token: ${{ secrets.GH_TOKEN }}
@@ -160,6 +161,12 @@ jobs:
 ```
 
    **Note:** Ensure you add your `GH_TOKEN` as a secret in your GitHub repository.
+
+   4. **Setup Github Page**
+   
+   Under your repository name, click  Settings. If you cannot see the "Settings" tab, select the  dropdown menu, then click Settings. Following setting as image below:
+
+   ![Github Page](./setup-github-page.jpg)
 
 ### 4. **Commit, Push, and Deploy**
 
