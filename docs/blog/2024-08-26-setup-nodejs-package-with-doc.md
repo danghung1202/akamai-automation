@@ -4,8 +4,9 @@ title: How To Set Up the Node.js Package project with Docusaurus
 tags: [hola, docusaurus]
 ---
 
+To integrate the Docusaurus documentation site within your Node.js package project and have it under a `docs` folder, you can follow these steps.
 
-To integrate the Docusaurus documentation site within your Node.js package project and have it under a `docs` folder, you can follow these steps:
+<!-- truncate -->
 
 ### 1. **Set Up the Node.js Package**
 
@@ -113,52 +114,52 @@ To integrate the Docusaurus documentation site within your Node.js package proje
    ```
 
    - Edit the `deploy-docs.yml` file:
-   ```yaml
-   name: Deploy Docusaurus Documentation
+```yaml
+name: Deploy Docusaurus Documentation
 
-    on:
-    push:
-        paths:
-        - '.github/workflows/deploy-doc.yml'
-        - 'docs/**'
-        # Review gh actions docs if you want to further define triggers, paths, etc
-        # https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#on
+on:
+  push:
+    paths:
+      - '.github/workflows/deploy-doc.yml'
+      - 'docs/**'
+    # Review gh actions docs if you want to further define triggers, paths, etc
+    # https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#on
 
-    jobs:
-    deploy:
-        name: Deploy Docusaurus to GitHub Pages
-        runs-on: ubuntu-latest
-        defaults:
-        run:
-            working-directory: ./docs
+jobs:
+  deploy:
+    name: Deploy Docusaurus to GitHub Pages
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./docs
 
-        steps:
-        - uses: actions/checkout@v3
+    steps:
+      - uses: actions/checkout@v3
 
-        - name: Setup Node
-            uses: actions/setup-node@v3
-            with:
-            node-version: 18
-            cache: npm
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: npm
 
-        - name: Install dependencies
-            run: npm install --frozen-lockfile
+      - name: Install dependencies
+        run: npm install --frozen-lockfile
 
-        - name: Build website
-            run: npm run build
+      - name: Build website
+        run: npm run build
 
-        # Popular action to deploy to GitHub Pages:
-        # Docs: https://github.com/peaceiris/actions-gh-pages#%EF%B8%8F-docusaurus
-        - name: Deploy to GitHub Pages
-            uses: peaceiris/actions-gh-pages@v4
-            if: github.ref == 'refs/heads/main'
-            with:
-            github_token: ${{ secrets.GH_TOKEN }}
-            # Build output to publish to the `gh-pages` branch:
-            publish_dir: ./docs/build
-   ```
+      # Popular action to deploy to GitHub Pages:
+      # Docs: https://github.com/peaceiris/actions-gh-pages#%EF%B8%8F-docusaurus
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        if: github.ref == 'refs/heads/main'
+        with:
+          github_token: ${{ secrets.GH_TOKEN }}
+          # Build output to publish to the `gh-pages` branch:
+          publish_dir: ./docs/build
+```
 
-   **Note:** Replace `<username>` and `<repo-name>` with your GitHub username and repository name.
+   **Note:** Ensure you add your `GH_TOKEN` as a secret in your GitHub repository.
 
 ### 4. **Commit, Push, and Deploy**
 
