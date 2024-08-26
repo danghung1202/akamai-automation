@@ -57,7 +57,6 @@ This project is a Puppeteer-based automation tool designed to automate configura
 
 - `src/`: Contains the core automation scripts.
 - `docs/`: Documentation files for the functions in this project.
-- `log/`: Utility for logging actions during script execution.
 
 ## Contributing
 
