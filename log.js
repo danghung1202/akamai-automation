@@ -2,7 +2,7 @@ const fs = require('fs');
 
 
 function logToFile(message) {
-  const logStream = fs.createWriteStream('./akamai/logs/logs.txt', { flags: 'a' });
+  const logStream = fs.createWriteStream('./logs/logs.txt', { flags: 'a' });
   logStream.write(`${message}\n`);
   logStream.end();
 }

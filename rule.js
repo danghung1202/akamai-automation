@@ -44,7 +44,7 @@ var self = module.exports = {
     clickToSelectTheRule: async (page, rules) => {
         const hasTheRule = await self.checkIfHasTheRule(page, rules);
         if (!hasTheRule) {
-            log.white(`The rule ${rules.join(' -> ')} is not found!`)
+            log.redBg(`The rule ${rules.join(' -> ')} is not found!`)
             return false;
         }
 
