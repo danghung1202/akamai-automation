@@ -1,5 +1,4 @@
 ---
-slug: /
 sidebar_position: 2
 title: Login Akamai Using Cookie
 ---
