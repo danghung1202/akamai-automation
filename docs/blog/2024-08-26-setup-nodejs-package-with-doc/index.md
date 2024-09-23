@@ -1,7 +1,6 @@
 ---
 slug: setup-nodejs-package-with-doc
 title: How To Set Up the Node.js Package project with Docusaurus
-tags: [hola, docusaurus]
 ---
 
 To integrate the Docusaurus documentation site within your Node.js package project and have it under a `docs` folder, you can follow these steps.

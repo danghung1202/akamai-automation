@@ -4,7 +4,9 @@
 // There are various equivalent ways to declare your Docusaurus config.
 // See: https://docusaurus.io/docs/api/docusaurus-config
 
-import {themes as prismThemes} from 'prism-react-renderer';
+import {
+  themes as prismThemes
+} from 'prism-react-renderer';
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
@@ -44,8 +46,7 @@ const config = {
           sidebarPath: './sidebars.js',
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
-          editUrl:
-            'https://github.com/danghung1202/akamai-automation/tree/main/docs/',
+          editUrl: 'https://github.com/danghung1202/akamai-automation/tree/main/docs/',
         },
         blog: {
           showReadingTime: true,
@@ -55,8 +56,7 @@ const config = {
           },
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
-          editUrl:
-            'https://github.com/danghung1202/akamai-automation/tree/main/docs/',
+          editUrl: 'https://github.com/danghung1202/akamai-automation/tree/main/docs/',
           // Useful options to enforce blogging best practices
           onInlineTags: 'warn',
           onInlineAuthors: 'warn',
@@ -80,14 +80,17 @@ const config = {
           alt: 'Akamai Automation Logo',
           src: 'img/logo.svg',
         },
-        items: [
-          {
+        items: [{
             type: 'docSidebar',
-            sidebarId: 'tutorialSidebar',
+            sidebarId: 'docSidebar',
             position: 'left',
-            label: 'Tutorial',
+            label: 'Docs',
           },
-          {to: '/blog', label: 'Blog', position: 'left'},
+          {
+            to: '/blog',
+            label: 'Blog',
+            position: 'left'
+          },
           {
             href: 'https://github.com/danghung1202/akamai-automation',
             label: 'GitHub',

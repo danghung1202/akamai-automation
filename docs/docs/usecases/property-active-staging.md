@@ -2,7 +2,7 @@
 sidebar_position: 1
 ---
 
-# Manage Docs Versions
+# Property Active Staging
 
 Docusaurus can manage multiple versions of your docs.
 
@@ -44,8 +44,6 @@ export default {
 ```
 
 The docs version dropdown appears in your navbar:
-
-![Docs Version Dropdown](./img/docsVersionDropdown.png)
 
 ## Update an existing version
 
