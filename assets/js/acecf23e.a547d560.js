@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkdocs=self.webpackChunkdocs||[]).push([[903],{1912:a=>{a.exports=JSON.parse('{"blogBasePath":"/akamai-automation/blog","blogTitle":"Blog","authorsListPath":"/akamai-automation/blog/authors"}')}}]);
