@@ -4,8 +4,8 @@ const log = require('./log');
 
 var self = module.exports = {
 
-    checkHasBehaviorByName: async (page, behaviorName) => {
-        const xpathHeader = `//pm-rule-editor/pm-behavior-list//pm-behavior[div[@class="header" and contains(string(), "${behaviorName}")]]`
+    checkHasBehaviorByName: async (page, behaviorNewName) => {
+        const xpathHeader = `//pm-behavior-list//pm-behavior[div[@class="header" and contains(string(), "${behaviorName}")]]`
         return (await page.$('xpath=' + xpathHeader)) || false;
     },
 
@@ -16,7 +16,7 @@ var self = module.exports = {
                 log.white(`Click to '+Behavior' button to add new behavior`)
             }).click()
 
-        await akamaiMenu.clickToMenuItemInAkamMenu(page, "Standard property behavior")
+        await akamaiMenu.clickToMenuItemInAkamai(page, "Standard property behavior")
 
         const selectedRule = `//pm-add-behavior-modal//div[@class="add-behavior-modal-sidebar-body"]//ul/li[contains(text(), "${behaviorName}")]`
         await page.locator('xpath=' + selectedRule)
@@ -24,18 +24,16 @@ var self = module.exports = {
                 log.white(`Select  the '${behaviorName}' from behavior template`)
             }).click();
 
-        const insertBtn = `//div[@akammodalactions]/button[contains(text(), "Insert Behavior")]`
+        const insertNewBtn = `//div[@akammodalactions]/button[contains(text(), "Insert Behavior")]`
         await page.locator('xpath=' + insertBtn)
-            .on(puppeteer.LocatorEvent.Action, () => {
-                log.white(`Click to 'Insert Behavior' to save new behavior`)
-            }).click();
+           .click();
 
     },
 
     getValueOfInputFieldInBehavior: async (page, behaviorName, fieldLabel, index = 1) => {
         const xpathInput = `//pm-rule-editor/pm-behavior-list//pm-behavior[div[@class="header" and contains(string(), "${behaviorName}")]][${index}]//div[akam-form-label[contains(string(), "${fieldLabel}")]]/following-sibling::div`
         await page.locator('xpath=' + xpathInput).wait()
-        return await page.$eval('xpath=' + xpathInput, el => el.innerText)
+        return await page.eval('xpath=' + xpathInput, el => el.innerText)
     },
 
     updateValueForInputFieldInBehavior: async (page, behaviorName, fieldLabel, fieldValue, index = 1) => {
@@ -63,6 +61,6 @@ var self = module.exports = {
         await page.locator('xpath=' + xpathRadioBtn)
             .on(puppeteer.LocatorEvent.Action, () => {
                 log.white(`Update the radio field in ${behaviorName}[${index}] -> ${fieldLabel}: ${fieldValue}`)
-            }).click();
+            });
     },
 }
