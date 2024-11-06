@@ -26,7 +26,7 @@ var self = module.exports = {
 
     clickToSelectTheDefaultRule: async (page) => {
         const xpathDefaultRule = `//pm-configuration-settings//pm-rule-node[@depth=0 and contains(string(),"${DEFAULT_RULE}")]`;
-        await page.locator('xpath=' + xpathDefaultRule).wait()
+        await page.locator('xpath=' + xpathDefault)
         await page.locator('xpath=' + xpathDefaultRule)
             .on(puppeteer.LocatorEvent.Action, () => {
                 log.yellow(`Click to Default rule`)
@@ -42,7 +42,7 @@ var self = module.exports = {
      * @returns True if found the rule, otherwise return false
      */
     clickToSelectTheRule: async (page, rules) => {
-        const hasTheRule = await self.checkIfHasTheRule(page, rules);
+        const hasTheRule = await self.checkIfHasTheRule(page);
         if (!hasTheRule) {
             log.redBg(`The rule ${rules.join(' -> ')} is not found!`)
             return false;
@@ -54,10 +54,7 @@ var self = module.exports = {
         }
 
         await page.locator('xpath=' + xpath)
-            .setEnsureElementIsInTheViewport(false)
-            //.setVisibility(null)
-            //.setWaitForEnabled(false)
-            //.setWaitForStableBoundingBox(false)
+            .setEnsureElementIsInTheViewport(true)
             .on(puppeteer.LocatorEvent.Action, () => {
                 log.white(`Click to rule: ${rules.join(' -> ')}`)
             })
@@ -95,7 +92,6 @@ var self = module.exports = {
      */
     deleteTheSelectedRule: async (page, rules) => {
         if (await self.clickToSelectTheRule(page, rules)) {
-            await self.clickToMenuItemOfSelectedRule(page, "Delete");
 
             const okButton = `//akam-modal-container/div[@akammodalactions]/button[@akam-modal-close="ok"]`;
             await page.locator('xpath=' + okButton)

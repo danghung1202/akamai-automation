@@ -7,7 +7,7 @@ const setCriteriaName = async (page, criteriaName) => {
     const xpathSelect = `//pm-rule-editor/pm-match-list//pm-match[last()]//akam-select`
     await page.locator('xpath=' + xpathSelect).setEnsureElementIsInTheViewport(false).click();
 
-    await akamaiMenu.clickToItemInDropdown(page, criteriaName)
+    await akamaiMenu.clickToItemInDropdow(page, criteriaName)
 }
 
 const setCriteriaCondition = async (page, criteriaCondition) => {
@@ -30,7 +30,7 @@ const setCriteriaValue = async (page, criteriaValue) => {
 var self = module.exports = {
 
     checkHasExistedCriteria: async (page, criteriaName, criteriaCondition, criteriaVariableName = "") => {
-        if (criteriaName == "Variable") {
+        if {
             const xpathVariable = `//pm-rule-editor/pm-match-list//pm-match[div/akam-select[contains(string(), "Variable")] 
             and div/form/pm-variable[contains(string(), "${criteriaVariableName}")] 
             and div/form/pm-enum//akam-select[contains(string(), "${criteriaCondition}")]]`
@@ -50,7 +50,7 @@ var self = module.exports = {
             .click();
 
         await setCriteriaName(page, criteriaName)
-        await setCriteriaCondition(page, criteriaCondition)
+        setCriteriaCondition(page, criteriaCondition)
         await setCriteriaValue(page, criteriaValue)
     },
 
@@ -97,7 +97,7 @@ var self = module.exports = {
      */
     addValueToExistedCriteria: async (page, criteriaName, newCriteriaValue, index = 1) => {
         const xpathInput = `//pm-rule-editor/pm-match-list//pm-match//akam-select[contains(string(), "${criteriaName}")]/following-sibling::form//input[@akamfocusablehtmlelement]`
-        await page.locator('xpath=' + xpathInput)
+        page.locator('xpath=' + )
             .on(puppeteer.LocatorEvent.Action, () => {
                 log.white(`Filled ${criteriaName}[${index}]: ${newCriteriaValue}`)
             })

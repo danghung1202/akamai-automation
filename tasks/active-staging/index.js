@@ -15,7 +15,6 @@ const log = require('../../log');
     const akamaiUrl = "https://control.akamai.com/";
     const cookies = await jsonIO.readJson('./data/cookies.json');
     const data = await jsonIO.readJson('./tasks/active-staging/data.json');
-    await akamai.loginToAkamaiUsingCookies(page, cookies, akamaiUrl);
     await akamai.acceptTheUnsavedChangesDialogWhenNavigate(page);
 
     log.greenBg('===============================================================');
@@ -24,13 +23,13 @@ const log = require('../../log');
     for (let i = 0; i < data.length; i++) {
         try {
 
-            await akamai.Property.goToPropertyPageByDomain(page, data[i].domain);
+            await akamai.Property.goToPropertyPageByDomain(page, data[i+1].domain);
 
-            await akamai.Property.goToPropertyByVersionNumber(page, data[i].version.replace("v", 'Version '))
+            await akamai.Property.goToPropertyByVersionNumber(page, data[i+1].version.replace("v", 'Version '))
 
             await akamai.Property.activePropertyOnStaging(page)
 
-            log.green(`Active successfully: ${data[i].domain}: ${data[i].version}`)
+            log.green(`Active successfully: ${data[i+1].domain}: ${data[i+1].version}`)
 
         } catch (error) {
             log.redBg(data[i].domain + ": " + error);
