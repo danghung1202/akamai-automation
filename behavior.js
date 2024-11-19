@@ -13,7 +13,10 @@ module.exports = {
      */
     checkHasBehaviorByName: async (page, behaviorName) => {
         const xpathHeader = `//pm-rule-editor/pm-behavior-list//pm-behavior[div[@class="header" and contains(string(), "${behaviorName}")]]`
-        return (await page.$('xpath=' + xpathHeader)) || false;
+        if (await page.$('xpath=' + xpathHeader)) {
+            return true;
+        }
+        return false;
     },
 
     /**

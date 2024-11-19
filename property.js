@@ -56,7 +56,7 @@ const clickToNewVersionBasedOnStagingOrProd = async (page, environment) => {
     //const buttonMenu = await page.locator('xpath=' + xpathVersionMenu).click();
 }
 
-module.exports = {
+const self = module.exports = {
 
     /**
      * Navigate to the property page by domain.
@@ -70,7 +70,7 @@ module.exports = {
 
             await page.locator('xpath=' + searchInput).fill(domain);
 
-            
+
             const searchItem = '//akamai-portal-search-result-category/div[contains(string(div), "www.' + domain + '")]//a';
 
             await page.locator('xpath=' + searchItem)
@@ -181,8 +181,30 @@ module.exports = {
      */
     checkHasDraftVersionBasedOnOtherVersionNumber: async (page, baseVersionNumber) => {
         const xpath = `//tr[td[contains(@class, "akam-column-basedOn") and contains(string(), "${baseVersionNumber}")] and td[contains(@class, "akam-column-stagingStatus") and contains(string(), "Inactive")]]/td[contains(@class, "akam-column-version")]//a`
-        let hasDraftVersion = (await page.$('xpath=' + xpath)) || false;
-        return hasDraftVersion;
+
+        if (await page.$('xpath=' + xpath)) {
+            return true;
+        }
+        return false;
+    },
+
+    /**
+     * Get latest draft version number based on a version number when you are in the Property page.
+     * @param {*} page The Puppeteer's page object
+     * @param {string} baseVersionNumber The base version number, e.g., "Version 40".
+     * @returns {Promise<void>} The version number if found, otherwise undefined.
+     */
+    getLatestDraftVersionBasedOnOtherVersionNumber: async (page, baseVersionNumber) => {
+        const hasDraftVersion =await self.checkHasDraftVersionBasedOnOtherVersionNumber(page, baseVersionNumber);
+        if (!hasDraftVersion) {
+            return undefined;
+        }
+
+        const matchTr = `//tr[td[contains(@class, "akam-column-basedOn") and contains(string(), "${baseVersionNumber}")] and td[contains(@class, "akam-column-stagingStatus") and contains(string(), "Inactive")]]/td[contains(@class, "akam-column-version")]`
+        const xpathVersion = `${matchTr}//span`
+        const versionName = await page.$eval('xpath=' + xpathVersion, el => el.innerText);
+
+        return versionName;
     },
 
     /**

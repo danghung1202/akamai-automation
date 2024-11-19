@@ -58,7 +58,9 @@ var self = module.exports = {
         for (let i = 1; i < rules.length; i++) {
             xpath += `/following-sibling::pm-rule-node[@depth=${i + 1} and contains(string(),"${rules[i]}")]`
         }
-        return (await page.$('xpath=' + xpath)) || false;
+        
+        if (await page.$('xpath=' + xpath)) return true;
+        return false;
     },
 
     clickToSelectTheDefaultRule: async (page) => {
