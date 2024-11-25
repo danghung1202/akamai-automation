@@ -19,6 +19,7 @@ const clickToMenuItemInVersionDetailsPage = async (page, ruleName, menuItemText)
         .click();
 }
 
+
 var self = module.exports = {
 
     /**
@@ -114,6 +115,17 @@ var self = module.exports = {
             }).click()
     },
 
+    /**
+     * Updates the rule match in the advanced view of the rule form.
+     * 
+     * @param {object} page - The Puppeteer page object.
+     * @param {string} matchName - The name of the match to update.
+     * @param {string} matchOperator - The operator of the match to update.
+     * @param {string} matchValue - The value of the match to update.
+     * @param {number} index - The index of the match in the list.
+     * 
+     * @returns {Promise<void>}
+     */
     updateRuleMatchInAdvancedView: async (page, matchName, matchOperator, matchValue, index) => {
         const matchPath = `xpath=//div[@id="rule_details_advanced"]//div[contains(@class, "updateableList")]/div[${index}]`
         const matchNamePath = `${matchPath}//ng-form//select`

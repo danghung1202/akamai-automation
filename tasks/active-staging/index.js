@@ -7,8 +7,8 @@ const log = require('../../log');
 
 (async () => {
     const browser = await puppeteer.launch({
-        headless: false,
-        slowMo: 12
+        headless: true,
+        slowMo: 15
     })
     const page = await browser.newPage();
 

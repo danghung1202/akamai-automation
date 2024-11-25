@@ -29,6 +29,16 @@ const setCriteriaValue = async (page, criteriaValue) => {
 
 var self = module.exports = {
 
+    /**
+     * Checks if a criteria already exists in the rules of the current Akamai property.
+     * @async
+     * @function checkHasExistedCriteria
+     * @param {Object} page - The Puppeteer page object.
+     * @param {string} criteriaName - The name of the criteria.
+     * @param {string} criteriaCondition - The condition of the criteria.
+     * @param {string} [criteriaVariableName=""] - The variable name of the criteria (optional).
+     * @returns {Promise<boolean>} - Returns true if the criteria exists, otherwise false.
+     */
     checkHasExistedCriteria: async (page, criteriaName, criteriaCondition, criteriaVariableName = "") => {
         if (criteriaName == "Variable") {
             const xpathVariable = `//pm-rule-editor/pm-match-list//pm-match[div/akam-select[contains(string(), "Variable")] 
@@ -41,6 +51,16 @@ var self = module.exports = {
         }
     },
 
+    /**
+     * Adds a new criteria to the rules of the current Akamai property.
+     * @async
+     * @function addNewCriteria
+     * @param {Object} page - The Puppeteer page object.
+     * @param {string} criteriaName - The name of the criteria.
+     * @param {string} criteriaCondition - The condition of the criteria.
+     * @param {string} criteriaValue - The value of the criteria.
+     * @returns {Promise<void>}
+     */
     addNewCriteria: async (page, criteriaName, criteriaCondition, criteriaValue) => {
         const xpathBtn = `//pm-rule-editor/pm-match-list//akam-content-panel-header[contains(string(), "Criteria")]//button`
         await page.locator('xpath=' + xpathBtn).setEnsureElementIsInTheViewport(false)
@@ -54,6 +74,16 @@ var self = module.exports = {
         await setCriteriaValue(page, criteriaValue)
     },
 
+    /**
+     * Gets the value of a criteria by its name in the rules of the current Akamai property.
+     * @async
+     * @function getCriteriaValueByName
+     * @param {Object} page - The Puppeteer page object.
+     * @param {string} criteriaName - The name of the criteria.
+     * @param {string} criteriaCondition - The condition of the criteria.
+     * @param {string} [criteriaVariableName=""] - The variable name of the criteria (optional).
+     * @returns {Promise<string[]>} - Returns an array of criteria values.
+     */
     getCriteriaValueByName: async (page, criteriaName, criteriaCondition, criteriaVariableName = "") => {
         if (criteriaName == "Variable") {
             const xpathVariable = `//pm-rule-editor/pm-match-list//pm-match[div/akam-select[contains(string(), "Variable")] 
@@ -71,12 +101,14 @@ var self = module.exports = {
     },
 
     /**
-     * Delete all values in criteria by click 'Close' icon in each tag
-     * 
-     * Note: This method sometime don't work well. 
-     * @param {*} page 
-     * @param {*} criteriaName The criteria's name such as `Hostname`, `Path` etc..
-     * @param {*} index 
+     * Deletes all values in an existing criteria by clicking the 'Close' icon on each tag in the rules of the current Akamai property.
+     * Note: This method may not always work well.
+     * @async
+     * @function deleteAllValueInExitedCriteria
+     * @param {Object} page - The Puppeteer page object.
+     * @param {string} criteriaName - The name of the criteria (e.g., 'Hostname', 'Path').
+     * @param {number} [index=1] - The index of the criteria (optional).
+     * @returns {Promise<void>}
      */
     deleteAllValueInExitedCriteria: async (page, criteriaName, index = 1) => {
         const xpathTagCloseIcons = `//pm-rule-editor/pm-match-list//pm-match//akam-select[contains(string(), "${criteriaName}")]/following-sibling::form//akam-tag-input//akam-tag//akam-icon`
@@ -89,11 +121,14 @@ var self = module.exports = {
     },
 
     /**
-     * Add new value into criteria, the akamai will automatically check if the value has not existed yet then insert it
-     * @param {*} page 
-     * @param {*} criteriaName 
-     * @param {*} newCriteriaValue 
-     * @param {*} index 
+     * Adds a new value to an existing criteria in the rules of the current Akamai property. Akamai will automatically check if the value does not exist and then insert it.
+     * @async
+     * @function addValueToExistedCriteria
+     * @param {Object} page - The Puppeteer page object.
+     * @param {string} criteriaName - The name of the criteria.
+     * @param {string} newCriteriaValue - The new value to add to the criteria.
+     * @param {number} [index=1] - The index of the criteria (optional).
+     * @returns {Promise<void>}
      */
     addValueToExistedCriteria: async (page, criteriaName, newCriteriaValue, index = 1) => {
         const xpathInput = `//pm-rule-editor/pm-match-list//pm-match//akam-select[contains(string(), "${criteriaName}")]/following-sibling::form//input[@akamfocusablehtmlelement]`
