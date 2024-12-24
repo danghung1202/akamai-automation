@@ -282,7 +282,7 @@ const self = module.exports = {
     /**
      * Get the summary information of a property by version number.
      * @param {*} page The Puppeteer's page object
-     * @param {string} versionNumber The version number to get the summary for.
+     * @param {string} versionNumber The version number to get the summary for, for example, "Version 50".
      * @returns {Promise<Object>} JSON object containing `{version, lastEdited, author, notes}`.
      */
     getSummaryOfPropertyVersion: async (page, versionNumber) => {
@@ -291,9 +291,11 @@ const self = module.exports = {
         const lastEdited = await page.$eval(`xpath=${xpathTr}/td[contains(@class,"akam-column-lastEdited")]`, el => el.innerText)
         const author = await page.$eval(`xpath=${xpathTr}/td[contains(@class,"akam-column-lastEditedByUser")]`, el => el.innerText)
         const notes = await page.$eval(`xpath=${xpathTr}/td[contains(@class,"akam-column-notes")]`, el => el.innerText)
+        const basedOn = await page.$eval(`xpath=${xpathTr}/td[contains(@class,"akam-column-basedOn")]`, el => el.innerText)
 
         return {
             version: versionNumber,
+            basedOn,
             lastEdited,
             author,
             notes
