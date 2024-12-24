@@ -2,6 +2,43 @@ const puppeteer = require('puppeteer');
 const akamaiMenu = require('./menu');
 const log = require('./log')
 
+/**
+     * When you selected the rule, you can add new rule from template before/after/child the selected rule
+     * @param {*} page 
+     * @param {*} ruleTemplateName The rule template's name
+     * @param {*} position Default is `After Current Rule`,  enum of `After Current Rule | Before Current Rule | Child Rule`
+     */
+const addNewRuleFromRuleTemplate = async (page, ruleTemplateName, position = "After Current Rule") => {
+
+    const xpath = `//pm-configuration-settings//button[contains(string(), "Rules")]/following-sibling::button`;
+    await page.locator('xpath=' + xpath)
+        .on(puppeteer.LocatorEvent.Action, () => {
+            log.white(`Click to '+ Rules' button`)
+        }).click();
+
+    await akamaiMenu.clickToMenuItemInAkamMenu(page, position)
+
+    const selectCategory = `//pm-add-rule-modal//akam-select[@formcontrolname="searchCategory"]`
+    await page.locator('xpath=' + selectCategory)
+        .on(puppeteer.LocatorEvent.Action, () => {
+            log.white(`Open the the dropdown 'searchCategory'`)
+        }).click();
+
+    await akamaiMenu.clickToItemInDropdown(page, "All");
+
+    const selectedRule = `//pm-add-rule-modal//div[@class="add-rule-modal-sidebar-body"]//ul/li[contains(text(), "${ruleTemplateName}")]`
+    await page.locator('xpath=' + selectedRule)
+        .on(puppeteer.LocatorEvent.Action, () => {
+            log.white(`Choose the '${ruleTemplateName}' template rule`)
+        }).click();
+
+    const insertBtn = `//div[@akammodalactions]/button[contains(text(), "Insert Rule")]`
+    await page.locator('xpath=' + insertBtn)
+        .on(puppeteer.LocatorEvent.Action, () => {
+            log.white(`Click to 'Insert Rule' to insert new rule`)
+        }).click();
+}
+
 const DEFAULT_RULE = 'Default Rule'
 var self = module.exports = {
     /**
@@ -19,9 +56,11 @@ var self = module.exports = {
 
         var xpath = `//pm-configuration-settings//pm-rule-node[@depth=1 and contains(string(),"${rules[0]}")]`;
         for (let i = 1; i < rules.length; i++) {
-            xpath += `/following-sibling::pm-rule-node[@depth=${i+1} and contains(string(),"${rules[i]}")]`
+            xpath += `/following-sibling::pm-rule-node[@depth=${i + 1} and contains(string(),"${rules[i]}")]`
         }
-        return (await page.$('xpath=' + xpath)) || false;
+        
+        if (await page.$('xpath=' + xpath)) return true;
+        return false;
     },
 
     clickToSelectTheDefaultRule: async (page) => {
@@ -50,7 +89,7 @@ var self = module.exports = {
 
         var xpath = `//pm-configuration-settings//pm-rule-node[@depth=1 and contains(string(),"${rules[0]}")]`;
         for (let i = 1; i < rules.length; i++) {
-            xpath += `/following-sibling::pm-rule-node[@depth=${i+1} and contains(string(),"${rules[i]}")]`
+            xpath += `/following-sibling::pm-rule-node[@depth=${i + 1} and contains(string(),"${rules[i]}")]`
         }
 
         await page.locator('xpath=' + xpath)
@@ -111,49 +150,12 @@ var self = module.exports = {
     },
 
     /**
-     * When you selected the rule, you can add new rule from template before/after/child the selected rule
-     * @param {*} page 
-     * @param {*} ruleTemplateName The rule template's name
-     * @param {*} position Default is `After Current Rule`,  enum of `After Current Rule | Before Current Rule | Child Rule`
-     */
-    addNewRuleFromRuleTemplate: async (page, ruleTemplateName, position = "After Current Rule") => {
-
-        const xpath = `//pm-configuration-settings//button[contains(string(), "Rules")]/following-sibling::button`;
-        await page.locator('xpath=' + xpath)
-            .on(puppeteer.LocatorEvent.Action, () => {
-                log.white(`Click to '+ Rules' button`)
-            }).click();
-
-        await akamaiMenu.clickToMenuItemInAkamMenu(page, position)
-
-        const selectCategory = `//pm-add-rule-modal//akam-select[@formcontrolname="searchCategory"]`
-        await page.locator('xpath=' + selectCategory)
-            .on(puppeteer.LocatorEvent.Action, () => {
-                log.white(`Open the the dropdown 'searchCategory'`)
-            }).click();
-
-        await akamaiMenu.clickToItemInDropdown(page, "All");
-
-        const selectedRule = `//pm-add-rule-modal//div[@class="add-rule-modal-sidebar-body"]//ul/li[contains(text(), "${ruleTemplateName}")]`
-        await page.locator('xpath=' + selectedRule)
-            .on(puppeteer.LocatorEvent.Action, () => {
-                log.white(`Choose the '${ruleTemplateName}' template rule`)
-            }).click();
-
-        const insertBtn = `//div[@akammodalactions]/button[contains(text(), "Insert Rule")]`
-        await page.locator('xpath=' + insertBtn)
-            .on(puppeteer.LocatorEvent.Action, () => {
-                log.white(`Click to 'Insert Rule' to insert new rule`)
-            }).click();
-    },
-
-    /**
      * When you selected the rule, you can add new rule from template that is after the selected rule
      * @param {*} page 
      * @param {*} ruleTemplateName 
      */
     addNewRuleAfterSelectedRule: async (page, ruleTemplateName) => {
-        await self.addNewRuleFromRuleTemplate(page, ruleTemplateName, "After Current Rule");
+        await addNewRuleFromRuleTemplate(page, ruleTemplateName, "After Current Rule");
     },
 
     /**
@@ -162,7 +164,7 @@ var self = module.exports = {
      * @param {*} ruleTemplateName 
      */
     addNewRuleBeforeSelectedRule: async (page, ruleTemplateName) => {
-        await self.addNewRuleFromRuleTemplate(page, ruleTemplateName, "Before Current Rule");
+        await addNewRuleFromRuleTemplate(page, ruleTemplateName, "Before Current Rule");
     },
 
     /**
@@ -171,7 +173,7 @@ var self = module.exports = {
      * @param {*} ruleTemplateName 
      */
     addNewRuleIsChildOfSelectedRule: async (page, ruleTemplateName) => {
-        await self.addNewRuleFromRuleTemplate(page, ruleTemplateName, "Child Rule");
+        await addNewRuleFromRuleTemplate(page, ruleTemplateName, "Child Rule");
     },
 
     /**
@@ -190,6 +192,39 @@ var self = module.exports = {
             .on(puppeteer.LocatorEvent.Action, () => {
                 log.blue(`Finished editing the rule: ${ruleName}`);
             }).click();
+    },
+
+    /**
+     * Adds a new rule to the Akamai property configuration if it does not already exist.
+     * 
+     * This function checks if the rule already exists before adding it.
+     *
+     * @param {object} page - The Puppeteer page object.
+     * @param {Array<string>} newRulePath - The path of the new rule to be added.
+     * @param {Array<string>} insertedPositionRulePath - The path of the existing rule after which the new rule will be inserted.
+     * @param {string} ruleTemplateName - The template name of the rule to be added.
+     * @param {boolean} [isChild=false] - Whether the new rule is a child of the selected rule.
+     * @returns {Promise<boolean>} - Returns true if the rule was added successfully, otherwise false.
+     */
+    addNewRuleFromTemplate: async (page, newRulePath, insertedPositionRulePath, ruleTemplateName, isChild = false) => {
+        log.yellow(newRulePath);
+        const hasRule = await self.checkIfHasTheRule(page, newRulePath);
+        if (!hasRule) {
+            if (await self.clickToSelectTheRule(page, insertedPositionRulePath)) {
+                if (isChild) {
+                    await self.addNewRuleIsChildOfSelectedRule(page, ruleTemplateName);
+                } else {
+                    await self.addNewRuleAfterSelectedRule(page, ruleTemplateName);
+                }
+
+                await self.informAkamaiToFinishedEditingTheRule(page);
+                log.green(`The ${newRulePath} rule added successfully`);
+                return true;
+            }
+        } else {
+            log.redBg(`The ${newRulePath} rule existed`);
+        }
+        return false;
     }
 
 }

@@ -56,14 +56,21 @@ const clickToNewVersionBasedOnStagingOrProd = async (page, environment) => {
     //const buttonMenu = await page.locator('xpath=' + xpathVersionMenu).click();
 }
 
-module.exports = {
+const self = module.exports = {
+
+    /**
+     * Navigate to the property page by domain.
+     * @param {*} page The Puppeteer's page object
+     * @param {string} domain The domain name to search for.
+     * @returns {Promise<boolean>} True if navigation is successful, otherwise false.
+     */
     goToPropertyPageByDomain: async (page, domain) => {
         try {
             const searchInput = '//akamai-portal-search//input[contains(@class,"search")]';
 
             await page.locator('xpath=' + searchInput).fill(domain);
 
-            
+
             const searchItem = '//akamai-portal-search-result-category/div[contains(string(div), "www.' + domain + '")]//a';
 
             await page.locator('xpath=' + searchItem)
@@ -80,7 +87,12 @@ module.exports = {
             return false;
         }
     },
-
+    /**
+     * Navigate to the property page by version number.
+     * @param {*} page The Puppeteer's page object
+     * @param {string} versionNumber The version number to navigate to.
+     * @returns {Promise<void>}
+     */
     goToPropertyByVersionNumber: async (page, versionNumber) => {
         //sometime click to property detail link is not work. This is workaround
         await new Promise(r => setTimeout(r, 1000));
@@ -95,14 +107,19 @@ module.exports = {
     },
 
     /**
-     * When you are in Property page, you can get number of STAGING version
+     * Get the number of STAGING version when you are in the Property page.
      * @param {*} page The Puppeteer's page object
-     * @returns Version number, ex Version 50
+     * @returns {Promise<string>} Version number, e.g., "Version 50".
      */
     getStagingVersionNumber: async (page) => {
         return await getVersionNumberOfStagingOrProduction(page, "STAGING")
     },
 
+    /**
+     * Get the hostnames of the STAGING version when you are in the Property page.
+     * @param {*} page The Puppeteer's page object
+     * @returns {Promise<string[]>} Array of hostnames.
+     */
     getHostnamesOfStagingVersion: async (page) => {
         const xpath = `//pm-active-version[@network="STAGING"]//label[text()="Hostnames"]/following-sibling::div/div`;
         await page.locator('xpath=' + xpath).wait();
@@ -112,62 +129,90 @@ module.exports = {
     },
 
     /**
-     * When you are in Property page, you can get number of PRODUCTION version
+     * Get the number of PRODUCTION version when you are in the Property page.
      * @param {*} page The Puppeteer's page object
-     * @returns Version number, ex Version 50
+     * @returns {Promise<string>} Version number, e.g., "Version 50".
      */
     getProductionVersionNumber: async (page) => {
         return await getVersionNumberOfStagingOrProduction(page, "PRODUCTION")
     },
 
     /**
-     * When you are in Property page, you can navigate to STAGING version page
+     * Navigate to the STAGING version page when you are in the Property page.
      * @param {*} page The Puppeteer's page object
-     * @returns 
+     * @returns {Promise<void>}
      */
     goToStagingPropertyPage: async (page) => {
         await goToStagingOrProductionPropertyPage(page, "STAGING")
     },
 
     /**
-     * When you are in Property page, you can navigate to PRODUCTION version page
+     * Navigate to the PRODUCTION version page when you are in the Property page.
      * @param {*} page The Puppeteer's page object
-     * @returns 
+     * @returns {Promise<void>}
      */
     goToProductionPropertyPage: async (page) => {
         await goToStagingOrProductionPropertyPage(page, "PRODUCTION")
     },
 
     /**
-     * When you are in Property page, you can click to create new version based on STAGING version
+     * Click to create a new version based on the STAGING version when you are in the Property page.
      * @param {*} page The Puppeteer's page object
-     * @returns 
+     * @returns {Promise<void>}
      */
     clickToNewVersionBasedOnStaging: async (page) => {
         await clickToNewVersionBasedOnStagingOrProd(page, "STAGING")
     },
 
     /**
-     * When you are in Property page, you can click to create new version based on PRODUCTION version
+     * Click to create a new version based on the PRODUCTION version when you are in the Property page.
      * @param {*} page The Puppeteer's page object
-     * @returns 
+     * @returns {Promise<void>}
      */
     clickToNewVersionBasedOnProduction: async (page) => {
         await clickToNewVersionBasedOnStagingOrProd(page, "PRODUCTION")
     },
 
     /**
-     * When you are in Property page, you can check if there has a draft version based on other version number
+     * Check if there is a draft version based on another version number when you are in the Property page.
      * @param {*} page The Puppeteer's page object
-     * @param {*} baseVersionNumber The base version number, ex 'Version 40'
-     * @returns 
+     * @param {string} baseVersionNumber The base version number, e.g., "Version 40".
+     * @returns {Promise<boolean>} True if there is a draft version, otherwise false.
      */
     checkHasDraftVersionBasedOnOtherVersionNumber: async (page, baseVersionNumber) => {
         const xpath = `//tr[td[contains(@class, "akam-column-basedOn") and contains(string(), "${baseVersionNumber}")] and td[contains(@class, "akam-column-stagingStatus") and contains(string(), "Inactive")]]/td[contains(@class, "akam-column-version")]//a`
-        let hasDraftVersion = (await page.$('xpath=' + xpath)) || false;
-        return hasDraftVersion;
+
+        if (await page.$('xpath=' + xpath)) {
+            return true;
+        }
+        return false;
     },
 
+    /**
+     * Get latest draft version number based on a version number when you are in the Property page.
+     * @param {*} page The Puppeteer's page object
+     * @param {string} baseVersionNumber The base version number, e.g., "Version 40".
+     * @returns {Promise<void>} The version number if found, otherwise undefined.
+     */
+    getLatestDraftVersionBasedOnOtherVersionNumber: async (page, baseVersionNumber) => {
+        const hasDraftVersion =await self.checkHasDraftVersionBasedOnOtherVersionNumber(page, baseVersionNumber);
+        if (!hasDraftVersion) {
+            return undefined;
+        }
+
+        const matchTr = `//tr[td[contains(@class, "akam-column-basedOn") and contains(string(), "${baseVersionNumber}")] and td[contains(@class, "akam-column-stagingStatus") and contains(string(), "Inactive")]]/td[contains(@class, "akam-column-version")]`
+        const xpathVersion = `${matchTr}//span`
+        const versionName = await page.$eval('xpath=' + xpathVersion, el => el.innerText);
+
+        return versionName;
+    },
+
+    /**
+     * Navigate to the latest draft version based on a version number when you are in the Property page.
+     * @param {*} page The Puppeteer's page object
+     * @param {string} baseVersionNumber The base version number, e.g., "Version 40".
+     * @returns {Promise<void>}
+     */
     goToLatestDraftVersionBasedOnVersionNumber: async (page, baseVersionNumber) => {
         const matchTr = `//tr[td[contains(@class, "akam-column-basedOn") and contains(string(), "${baseVersionNumber}")] and td[contains(@class, "akam-column-stagingStatus") and contains(string(), "Inactive")]]/td[contains(@class, "akam-column-version")]`
         const xpathVersion = `${matchTr}//span`
@@ -181,6 +226,12 @@ module.exports = {
         await page.waitForNavigation();
     },
 
+    /**
+     * Update the property note when you are in the Property page.
+     * @param {*} page The Puppeteer's page object
+     * @param {string} notes The notes to update.
+     * @returns {Promise<void>}
+     */
     updatePropertyNote: async (page, notes) => {
         const xpath = `//pm-version-info//akam-text-area/textarea`
         await page.locator('xpath=' + xpath)
@@ -190,9 +241,9 @@ module.exports = {
     },
 
     /**
-     * When you are in Property details page, you can click to 'Save' button to save all changes
-     * @param {*} page 
-     * @returns the version number if save successfully, otherwise return false
+     * Click the 'Save' button to save all changes when you are in the Property details page.
+     * @param {*} page The Puppeteer's page object
+     * @returns {Promise<string|boolean>} The version number if saved successfully, otherwise false.
      */
     saveThePropertyChange: async (page) => {
         await new Promise(r => setTimeout(r, 1000));
@@ -229,10 +280,10 @@ module.exports = {
     },
 
     /**
-     * Get the information of property by version number
-     * @param {*} page 
-     * @param {*} versionNumber 
-     * @returns json object of `{version, lastEdited, author, notes}`
+     * Get the summary information of a property by version number.
+     * @param {*} page The Puppeteer's page object
+     * @param {string} versionNumber The version number to get the summary for.
+     * @returns {Promise<Object>} JSON object containing `{version, lastEdited, author, notes}`.
      */
     getSummaryOfPropertyVersion: async (page, versionNumber) => {
         const xpathTr = `//table//tr[td[contains(@class, "akam-column-version")  and contains(string(), "${versionNumber}")]]`
@@ -249,6 +300,11 @@ module.exports = {
         }
     },
 
+    /**
+     * Activate the property on STAGING when you are in the Property page.
+     * @param {*} page The Puppeteer's page object
+     * @returns {Promise<boolean>} True if activation is successful, otherwise false.
+     */
     activePropertyOnStaging: async (page) => {
         await page.waitForSelector('xpath=//pm-page-header//span[@pmpageheadersubtitle]');
         const versionName = await page.$eval('xpath=//pm-page-header//span[@pmpageheadersubtitle]', el => el.innerText);

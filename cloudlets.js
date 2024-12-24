@@ -38,8 +38,8 @@ var self = module.exports = {
 
     /**
      * When you are in 'Cloudlets Policy Manager' page, you can navigate to 'Policy Details' page by searching by policy name
-     * @param {*} page 
-     * @param {*} policyName 
+     * @param {*} page the Puppeteer's page object
+     * @param {*} policyName the policy name
      */
     goToCloudletsPolicyByName: async (page, policyName) => {
         await page.locator('xpath=//akam-table[@id-property="policyId"]//table/tbody/tr').wait();
@@ -81,12 +81,15 @@ var self = module.exports = {
      * When you are in 'Policy Details' page, you can check if there has a draft version based on other version number
      * @param {*} page The Puppeteer's page object
      * @param {*} baseVersionNumber The base version number, ex 'v40'
-     * @returns 
+     * @returns true if there has a draft version based on other version number otherwise false
      */
     checkHasDraftVersionBasedOnOtherVersionNumber: async (page, baseVersionNumber) => {
         const xpath = `//akam-table//table//tr[td[@row-property="description"][contains(string(), "${baseVersionNumber}")]]/td[1][a[count(i) = 0]]`
-        let hasDraftVersion = (await page.$('xpath=' + xpath)) || false;
-        return hasDraftVersion;
+
+        if (await page.$('xpath=' + xpath)) {
+            return true;
+        }
+        return false;
     },
 
     /**
