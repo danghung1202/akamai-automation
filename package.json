@@ -1,6 +1,6 @@
 {
   "name": "akamai-automation",
-  "version": "0.1.3",
+  "version": "1.0.0",
   "description": "This project is a Puppeteer-based automation tool designed to automate configuration tasks in the Akamai CDN platform, specifically targeting Akamai Property Manager. The tool leverages Puppeteer for browser automation, enabling seamless interaction with Akamai's web interface to manage rules, behaviors, criteria, and other configuration components.",
   "main": "index.js",
   "dependencies": {
