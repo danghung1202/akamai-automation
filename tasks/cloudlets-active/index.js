@@ -27,7 +27,7 @@ const log = require('../../log');
             if (version == "") continue;
             version = `v${version}`;
 
-            const cloudletsUrl = "https://control.akamai.com/apps/cloudlets/#/policies?gid=85373";
+            const cloudletsUrl = "https://control.akamai.com/apps/cloudlets/#/policies?gid=1234567";
             await page.goto(cloudletsUrl, {
                 waitUntil: 'domcontentloaded'
             })
